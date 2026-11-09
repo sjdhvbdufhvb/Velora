@@ -1,0 +1,1242 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#f38ab9">
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Velora | My Wallet</title>
+
+<style>
+:root {
+  --bg: #120e19;
+  --card: #251b2d;
+  --pink: #f38ab9;
+  --text: #fff4fa;
+  --muted: #bda9bf;
+  --border: #49344e;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont,
+               "Segoe UI", sans-serif;
+}
+
+button, input, select {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+.app {
+  max-width: 480px;
+  margin: auto;
+  min-height: 100vh;
+  padding: 25px 20px 110px;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.logo {
+  color: var(--pink);
+  font-size: 30px;
+  font-weight: 800;
+}
+
+.subtitle {
+  color: var(--muted);
+  font-size: 13px;
+  margin-top: 5px;
+}
+
+.avatar {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  background: #39263e;
+  display: grid;
+  place-items: center;
+  color: var(--pink);
+  font-size: 23px;
+}
+
+h2 {
+  font-size: 23px;
+  margin-bottom: 6px;
+}
+
+h3 {
+  font-size: 17px;
+  margin-top: 0;
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  padding: 22px;
+  margin: 18px 0;
+}
+
+.balance-card {
+  background: linear-gradient(
+    135deg,
+    #623550,
+    #39253f 65%,
+    #2b2035
+  );
+  border-color: #875575;
+  padding: 26px;
+}
+
+.balance {
+  font-size: 32px;
+  font-weight: 800;
+  margin: 20px 0;
+  overflow-wrap: anywhere;
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+}
+
+.btn {
+  padding: 13px 16px;
+  border: none;
+  border-radius: 13px;
+  font-weight: bold;
+}
+
+.actions .btn {
+  flex: 1;
+}
+
+.primary {
+  background: var(--pink);
+  color: #241321;
+}
+
+.secondary {
+  background: #ffffff20;
+  color: white;
+  border: 1px solid #ffffff30;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.stat {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 17px;
+}
+
+.stat-value {
+  font-size: 18px;
+  font-weight: bold;
+  margin-top: 12px;
+  overflow-wrap: anywhere;
+}
+
+.section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 28px;
+}
+
+.link-button {
+  border: none;
+  background: none;
+  color: var(--pink);
+}
+
+.transaction {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.transaction:last-child {
+  border-bottom: none;
+}
+
+.transaction-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 13px;
+  background: #3e2a45;
+  display: grid;
+  place-items: center;
+  font-size: 20px;
+}
+
+.transaction-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.transaction-title {
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.transaction-date {
+  color: var(--muted);
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+.transaction-amount {
+  font-weight: bold;
+  font-size: 13px;
+  overflow-wrap: anywhere;
+  text-align: right;
+}
+
+.income {
+  color: #a5e5c0;
+}
+
+.expense {
+  color: #ffb5d0;
+}
+
+.empty {
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.page {
+  display: none;
+}
+
+.page.active {
+  display: block;
+}
+
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(480px, 100%);
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  background: #201626f5;
+  border-top: 1px solid var(--border);
+  padding: 13px 8px 20px;
+  z-index: 5;
+}
+
+.nav-btn {
+  background: none;
+  border: none;
+  color: #aa96b0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+}
+
+.nav-btn span {
+  font-size: 23px;
+}
+
+.nav-btn.active {
+  color: var(--pink);
+}
+
+.floating-btn {
+  position: fixed;
+  bottom: 95px;
+  right: max(
+    20px,
+    calc((100vw - 480px) / 2 + 20px)
+  );
+  width: 55px;
+  height: 55px;
+  border: none;
+  border-radius: 18px;
+  background: var(--pink);
+  color: #241321;
+  font-size: 30px;
+  box-shadow: 0 8px 25px #f38ab950;
+}
+
+label {
+  display: block;
+  margin: 15px 0 8px;
+  color: #f1c5db;
+  font-size: 13px;
+}
+
+.input {
+  width: 100%;
+  padding: 14px;
+  border-radius: 12px;
+  background: #35263c;
+  color: white;
+  border: 1px solid #674769;
+}
+
+.full {
+  width: 100%;
+  margin-top: 18px;
+}
+
+.note {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+.progress {
+  height: 12px;
+  background: #4b3550;
+  border-radius: 20px;
+  overflow: hidden;
+  margin-top: 18px;
+}
+
+.progress-fill {
+  height: 100%;
+  width: 0%;
+  background: var(--pink);
+  border-radius: 20px;
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: #08050bdc;
+  z-index: 10;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.modal.open {
+  display: flex;
+}
+
+.modal-box {
+  width: 100%;
+  max-width: 420px;
+  background: #281c30;
+  border: 1px solid #795475;
+  border-radius: 24px;
+  padding: 24px;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.close-btn {
+  border: none;
+  background: none;
+  color: white;
+  font-size: 28px;
+}
+
+.type-buttons {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.type-buttons button {
+  flex: 1;
+}
+
+.selected {
+  background: var(--pink);
+  color: #241321;
+}
+</style>
+</head>
+
+<body>
+
+<div id="currencyWelcome" style="
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: #15101d;
+  color: white;
+  padding: 35px 25px;
+  text-align: center;
+  font-family: Arial, sans-serif;
+">
+  <h1 style="color: #f38ab9; margin-top: 80px;">
+    Velora ♡
+  </h1>
+
+  <h2>Welcome to Velora!</h2>
+
+  <p style="color: #cdb6c9;">
+    Choose your currency to get started.
+  </p>
+
+  <select id="welcomeCurrency" class="input"
+    style="margin-top: 30px;">
+  </select>
+
+  <button class="btn primary full"
+    onclick="finishWelcome()">
+    Continue ♡
+  </button>
+</div>
+
+<div class="app">
+
+  <header>
+    <div>
+      <div class="logo">Velora ♡</div>
+      <div class="subtitle">
+        Your money, beautifully managed.
+      </div>
+    </div>
+    <div class="avatar">✦</div>
+  </header>
+
+  <!-- HOME PAGE -->
+
+  <section class="page active" id="homePage">
+
+    <p class="subtitle">WELCOME BACK ♡</p>
+    <h2>Your wallet overview</h2>
+
+    <div class="card balance-card">
+      <div class="subtitle">✧ Total Balance</div>
+
+      <div class="balance" id="balance">
+        KWD 0.000
+      </div>
+
+      <div class="actions">
+        <button class="btn primary"
+          onclick="openTransaction('income')">
+          + Income
+        </button>
+
+        <button class="btn secondary"
+          onclick="openTransaction('expense')">
+          − Expense
+        </button>
+      </div>
+    </div>
+
+<button class="link-button"
+  style="margin-top: 18px;"
+  onclick="resetBalance()">
+  ↺ Reset Balance ♡
+</button>
+
+    <div class="stats">
+      <div class="stat">
+        <div class="subtitle">↙ Total Income</div>
+        <div class="stat-value" id="incomeTotal">
+          KWD 0.000
+        </div>
+      </div>
+
+      <div class="stat">
+        <div class="subtitle">↗ Total Expenses</div>
+        <div class="stat-value" id="expenseTotal">
+          KWD 0.000
+        </div>
+      </div>
+    </div>
+
+    <div class="section-heading">
+      <h3>Recent Activity</h3>
+      <button class="link-button"
+        onclick="showPage('activity')">
+        See all →
+      </button>
+    </div>
+
+    <div class="card" id="recentList"></div>
+
+  </section>
+
+  <!-- ACTIVITY PAGE -->
+
+  <section class="page" id="activityPage">
+    <h2>Activity ✧</h2>
+    <p class="subtitle">
+      Your income and expenses.
+    </p>
+
+    <div class="card" id="activityList"></div>
+  </section>
+
+  <!-- SAVINGS PAGE -->
+
+  <section class="page" id="savingsPage">
+    <h2>Savings Goals ♡</h2>
+    <p class="subtitle">
+      Save for something special.
+    </p>
+
+    <div class="card">
+      <h3>My Savings Goal</h3>
+
+      <label for="goalName">Goal Name</label>
+      <input class="input" id="goalName"
+        placeholder="New laptop">
+
+      <label for="goalTarget">Target Amount</label>
+      <input class="input" id="goalTarget"
+        type="number" min="0" step="any"
+        placeholder="500">
+
+      <label for="goalSaved">Saved So Far</label>
+      <input class="input" id="goalSaved"
+        type="number" min="0" step="any"
+        placeholder="100">
+
+      <button class="btn primary full"
+        onclick="saveGoal()">
+        Save Goal ♡
+      </button>
+
+      <p id="goalSummary" class="subtitle"></p>
+
+      <div class="progress">
+        <div class="progress-fill"
+          id="goalProgress"></div>
+      </div>
+
+      <p id="goalPercent" class="subtitle">
+        0% completed
+      </p>
+    </div>
+
+    <p class="note">
+      Savings goals are for tracking only.
+      They do not deduct money from your balance.
+    </p>
+  </section>
+
+  <!-- SETTINGS PAGE -->
+
+  <section class="page" id="settingsPage">
+    <h2>Settings ⚙</h2>
+    <p class="subtitle">Personalize your wallet.</p>
+
+    <div class="card">
+      <h3>Currency 🌍</h3>
+
+      <label for="currency">
+        Choose your currency
+      </label>
+
+      <select class="input" id="currency"
+        onchange="changeCurrency()">
+      </select>
+
+      <p class="note">
+        Changing the currency changes the
+        displayed currency, not exchange rates.
+        Choose your main currency before
+        recording transactions.
+      </p>
+    </div>
+
+<div class="card">
+  <h3>Start Fresh ♡</h3>
+
+  <p class="note">
+    Delete your wallet data and start again
+    as a new user.
+  </p>
+
+  <button class="btn primary full"
+    onclick="startFresh()">
+    ↻ Start Fresh ♡
+  </button>
+</div>
+
+    <div class="card">
+      <h3>About Velora ♡</h3>
+      <p class="note">
+        Velora tracks your money manually.
+        It is not a bank and does not hold
+        or transfer real money.
+      </p>
+      <p class="note">
+        Your information is stored locally
+        in this browser.
+      </p>
+    </div>
+  </section>
+
+</div>
+
+<!-- ADD BUTTON -->
+
+<button class="floating-btn"
+  onclick="openTransaction('expense')"
+  aria-label="Add transaction">
+  +
+</button>
+
+<!-- BOTTOM NAVIGATION -->
+
+<nav class="bottom-nav">
+
+  <button class="nav-btn active"
+    data-page="home"
+    onclick="showPage('home')">
+    <span>⌂</span>
+    Home
+  </button>
+
+  <button class="nav-btn"
+    data-page="activity"
+    onclick="showPage('activity')">
+    <span>▤</span>
+    Activity
+  </button>
+
+  <button class="nav-btn"
+    data-page="savings"
+    onclick="showPage('savings')">
+    <span>♡</span>
+    Savings
+  </button>
+
+  <button class="nav-btn"
+    data-page="settings"
+    onclick="showPage('settings')">
+    <span>⚙</span>
+    Settings
+  </button>
+
+</nav>
+
+<!-- TRANSACTION POPUP -->
+
+<div class="modal" id="transactionModal">
+  <div class="modal-box">
+
+    <div class="modal-header">
+      <h3>New Transaction ♡</h3>
+      <button class="close-btn"
+        onclick="closeTransaction()">
+        ×
+      </button>
+    </div>
+
+    <div class="type-buttons">
+      <button class="btn selected"
+        id="incomeChoice"
+        onclick="setType('income')">
+        + Income
+      </button>
+
+      <button class="btn secondary"
+        id="expenseChoice"
+        onclick="setType('expense')">
+        − Expense
+      </button>
+    </div>
+
+    <label for="transactionTitle">
+      Description
+    </label>
+
+    <input class="input"
+      id="transactionTitle"
+      placeholder="Coffee, Salary, Shopping">
+
+    <label for="transactionAmount">
+      Amount
+    </label>
+
+    <input class="input"
+      id="transactionAmount"
+      type="number"
+      min="0"
+      step="any"
+      placeholder="0.000">
+
+    <button class="btn primary full"
+      onclick="saveTransaction()">
+      Save Transaction ♡
+    </button>
+
+  </div>
+</div>
+
+<script>
+
+// LOAD SAVED DATA
+
+const balanceKey = "veloraBalance";
+const currencyKey = "veloraCurrency";
+
+let balance = Number(
+  localStorage.getItem(balanceKey) || 0
+);
+
+if (!Number.isFinite(balance)) {
+  balance = 0;
+}
+
+let selectedCurrency =
+  localStorage.getItem(currencyKey) || "KWD";
+
+function loadData(key, fallback) {
+  try {
+    const value = JSON.parse(
+      localStorage.getItem(key)
+    );
+    return value === null ? fallback : value;
+  } catch {
+    return fallback;
+  }
+}
+
+let transactions = loadData(
+  "veloraTransactions", []
+);
+
+if (!Array.isArray(transactions)) {
+  transactions = [];
+}
+
+let goal = loadData("veloraGoal", {
+  name: "",
+  target: 0,
+  saved: 0
+});
+
+if (!goal || typeof goal !== "object") {
+  goal = { name: "", target: 0, saved: 0 };
+}
+
+let transactionType = "expense";
+
+// WORLD CURRENCIES
+
+const currencySelect =
+  document.getElementById("currency");
+
+let currencies;
+
+try {
+  currencies = Intl.supportedValuesOf("currency");
+} catch {
+  currencies = [
+    "KWD", "USD", "EUR", "GBP",
+    "SAR", "AED", "JPY"
+  ];
+}
+
+let currencyNames;
+
+try {
+  currencyNames = new Intl.DisplayNames(
+    ["en"], { type: "currency" }
+  );
+} catch {
+  currencyNames = null;
+}
+
+currencies.forEach(function(code) {
+  const option = document.createElement("option");
+
+  option.value = code;
+  option.textContent =
+    (currencyNames ? currencyNames.of(code) : code)
+    + " (" + code + ")";
+
+  currencySelect.appendChild(option);
+});
+
+if (!currencies.includes(selectedCurrency)) {
+  const option = document.createElement("option");
+  option.value = selectedCurrency;
+  option.textContent = selectedCurrency;
+  currencySelect.appendChild(option);
+}
+
+currencySelect.value = selectedCurrency;
+
+// FORMAT MONEY
+
+function money(amount) {
+  try {
+    return new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: selectedCurrency,
+      currencyDisplay: "code"
+    }).format(amount);
+  } catch {
+    return Number(amount).toFixed(2)
+      + " " + selectedCurrency;
+  }
+}
+
+function changeCurrency() {
+  selectedCurrency = currencySelect.value;
+
+  localStorage.setItem(
+    currencyKey, selectedCurrency
+  );
+
+  render();
+}
+
+// NAVIGATION
+
+function showPage(page) {
+  document.querySelectorAll(".page")
+    .forEach(function(section) {
+      section.classList.toggle(
+        "active",
+        section.id === page + "Page"
+      );
+    });
+
+  document.querySelectorAll(".nav-btn")
+    .forEach(function(button) {
+      button.classList.toggle(
+        "active",
+        button.dataset.page === page
+      );
+    });
+
+  window.scrollTo(0, 0);
+}
+
+// TRANSACTIONS
+
+function setType(type) {
+  transactionType = type;
+
+  document.getElementById("incomeChoice")
+    .classList.toggle(
+      "selected", type === "income"
+    );
+
+  document.getElementById("expenseChoice")
+    .classList.toggle(
+      "selected", type === "expense"
+    );
+}
+
+function openTransaction(type) {
+  setType(type);
+
+  document.getElementById(
+    "transactionTitle"
+  ).value = "";
+
+  document.getElementById(
+    "transactionAmount"
+  ).value = "";
+
+  document.getElementById(
+    "transactionModal"
+  ).classList.add("open");
+}
+
+function closeTransaction() {
+  document.getElementById(
+    "transactionModal"
+  ).classList.remove("open");
+}
+
+function saveTransaction() {
+  const title = document.getElementById(
+    "transactionTitle"
+  ).value.trim();
+
+  const amount = Number(
+    document.getElementById(
+      "transactionAmount"
+    ).value
+  );
+
+  if (
+    !title ||
+    !Number.isFinite(amount) ||
+    amount <= 0
+  ) {
+    alert("Enter a description and valid amount.");
+    return;
+  }
+
+  if (
+    transactionType === "expense" &&
+    amount > balance
+  ) {
+    if (!confirm(
+      "This expense exceeds your balance. Continue?"
+    )) {
+      return;
+    }
+  }
+
+  transactions.unshift({
+    id: Date.now(),
+    title: title,
+    amount: amount,
+    type: transactionType,
+    date: new Date().toLocaleDateString("en-GB")
+  });
+
+  if (transactionType === "income") {
+    balance += amount;
+  } else {
+    balance -= amount;
+  }
+
+  localStorage.setItem(balanceKey, balance);
+
+  localStorage.setItem(
+    "veloraTransactions",
+    JSON.stringify(transactions)
+  );
+
+  closeTransaction();
+  render();
+}
+
+// TRANSACTION LIST
+
+function displayTransactions(elementId, items) {
+  const container =
+    document.getElementById(elementId);
+
+  container.replaceChildren();
+
+  if (items.length === 0) {
+    const empty = document.createElement("p");
+    empty.className = "empty";
+    empty.textContent =
+      "No transactions yet. Tap + to begin ♡";
+    container.appendChild(empty);
+    return;
+  }
+
+  items.forEach(function(item) {
+    const row = document.createElement("div");
+    row.className = "transaction";
+
+    const icon = document.createElement("div");
+    icon.className = "transaction-icon";
+    icon.textContent =
+      item.type === "income" ? "↙" : "↗";
+
+    const info = document.createElement("div");
+    info.className = "transaction-info";
+
+    const title = document.createElement("div");
+    title.className = "transaction-title";
+    title.textContent = item.title;
+
+    const date = document.createElement("div");
+    date.className = "transaction-date";
+    date.textContent = item.date;
+
+    info.append(title, date);
+
+    const amount = document.createElement("div");
+    amount.className = "transaction-amount "
+      + (item.type === "income" ? "income" : "expense");
+
+    amount.textContent =
+      (item.type === "income" ? "+" : "−")
+      + money(item.amount);
+
+    
+const deleteButton = document.createElement("button");
+
+deleteButton.textContent = "🗑️";
+deleteButton.title = "Delete transaction";
+deleteButton.setAttribute("aria-label", "Delete transaction");
+
+deleteButton.style.background = "transparent";
+deleteButton.style.border = "none";
+deleteButton.style.cursor = "pointer";
+deleteButton.style.fontSize = "18px";
+deleteButton.style.padding = "8px";
+
+deleteButton.onclick = function() {
+  deleteTransaction(item.id);
+};
+
+row.append(icon, info, amount, deleteButton);
+
+    container.appendChild(row);
+  });
+}
+
+function deleteTransaction(id) {
+  const item = transactions.find(
+    transaction => transaction.id === id
+  );
+
+  if (!item) return;
+
+  const confirmed = confirm(
+    "Delete this transaction?"
+  );
+
+  if (!confirmed) return;
+
+  if (item.type === "income") {
+    balance -= Number(item.amount);
+  } else {
+    balance += Number(item.amount);
+  }
+
+  transactions = transactions.filter(
+    transaction => transaction.id !== id
+  );
+
+  localStorage.setItem(
+    "veloraBalance",
+    String(balance)
+  );
+
+  localStorage.setItem(
+    "veloraTransactions",
+    JSON.stringify(transactions)
+  );
+
+  render();
+}
+
+// SAVINGS
+
+function saveGoal() {
+  const name = document.getElementById(
+    "goalName"
+  ).value.trim();
+
+  const target = Number(
+    document.getElementById("goalTarget").value
+  );
+
+  const saved = Number(
+    document.getElementById("goalSaved").value
+  );
+
+  if (
+    !name ||
+    !Number.isFinite(target) ||
+    target <= 0 ||
+    !Number.isFinite(saved) ||
+    saved < 0
+  ) {
+    alert("Please enter valid savings details.");
+    return;
+  }
+
+  goal = { name, target, saved };
+
+  localStorage.setItem(
+    "veloraGoal",
+    JSON.stringify(goal)
+  );
+
+  renderGoal();
+}
+
+function renderGoal() {
+  document.getElementById("goalName").value =
+    goal.name || "";
+
+  document.getElementById("goalTarget").value =
+    goal.target || "";
+
+  document.getElementById("goalSaved").value =
+    goal.saved || "";
+
+  const percent = goal.target > 0
+    ? Math.min(100, goal.saved / goal.target * 100)
+    : 0;
+
+  document.getElementById(
+    "goalSummary"
+  ).textContent = goal.name
+    ? goal.name + ": " + money(goal.saved)
+      + " / " + money(goal.target)
+    : "Set your first savings goal ♡";
+
+  document.getElementById(
+    "goalProgress"
+  ).style.width = percent + "%";
+
+  document.getElementById(
+    "goalPercent"
+  ).textContent =
+    Math.round(percent) + "% completed";
+}
+
+// UPDATE DASHBOARD
+
+function render() {
+  document.getElementById(
+    "balance"
+  ).textContent = money(balance);
+
+  let income = 0;
+  let expenses = 0;
+
+  transactions.forEach(function(item) {
+    if (item.type === "income") {
+      income += item.amount;
+    } else {
+      expenses += item.amount;
+    }
+  });
+
+  document.getElementById(
+    "incomeTotal"
+  ).textContent = money(income);
+
+  document.getElementById(
+    "expenseTotal"
+  ).textContent = money(expenses);
+
+  displayTransactions(
+    "recentList",
+    transactions.slice(0, 3)
+  );
+
+  displayTransactions(
+    "activityList",
+    transactions
+  );
+
+  renderGoal();
+}
+
+render();
+
+function startFresh() {
+  const confirmed = confirm(
+    "Delete all Velora data and start as a new user?"
+  );
+
+  if (!confirmed) return;
+
+  localStorage.removeItem("veloraBalance");
+  localStorage.removeItem("veloraCurrency");
+  localStorage.removeItem("veloraTransactions");
+  localStorage.removeItem("veloraGoal");
+  localStorage.removeItem("veloraWelcomeDone");
+
+  location.reload();
+}
+
+function resetBalance() {
+  const confirmed = confirm(
+    "Reset your balance to zero and delete all transactions?"
+  );
+
+  if (!confirmed) return;
+
+  balance = 0;
+  transactions = [];
+
+  localStorage.setItem("veloraBalance", "0");
+  localStorage.setItem(
+    "veloraTransactions",
+    JSON.stringify([])
+  );
+
+  render();
+}
+
+const welcomeScreen =
+  document.getElementById("currencyWelcome");
+
+const welcomeSelect =
+  document.getElementById("welcomeCurrency");
+
+currencies.forEach(function(code) {
+  const option = document.createElement("option");
+
+  option.value = code;
+  option.textContent =
+    (currencyNames ? currencyNames.of(code) : code)
+    + " (" + code + ")";
+
+  welcomeSelect.appendChild(option);
+});
+
+welcomeSelect.value = selectedCurrency;
+
+function finishWelcome() {
+  selectedCurrency = welcomeSelect.value;
+
+  localStorage.setItem(
+    "veloraCurrency",
+    selectedCurrency
+  );
+
+  localStorage.setItem(
+    "veloraWelcomeDone",
+    "yes"
+  );
+
+  currencySelect.value = selectedCurrency;
+  welcomeScreen.style.display = "none";
+
+  render();
+}
+
+if (
+  localStorage.getItem("veloraWelcomeDone") !== "yes" &&
+  localStorage.getItem("veloraBalance") === null &&
+  localStorage.getItem("veloraCurrency") === null
+) {
+  welcomeScreen.style.display = "block";
+}
+
+render();
+
+</script>
+
+</body>
+</html>
